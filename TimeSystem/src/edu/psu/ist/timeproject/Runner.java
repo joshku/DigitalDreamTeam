@@ -20,10 +20,10 @@ public class Runner {
 		XMLReader xmlReader = new XMLReader(); 
 		SpreadsheetReader ssReader = new SpreadsheetReader(); 
 		ArrayList<TimeReport> reports = new ArrayList<>(); 
-		for (File file : new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\xmlDropBox").listFiles()) 
+		for (File file : new File("xmlDropBox").listFiles()) 
 			reports.addAll(xmlReader.read(file)); 
 		
-		for (File file : new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\SpreadsheetDropBox").listFiles()) 
+		for (File file : new File("SpreadsheetDropBox").listFiles()) 
 			reports.addAll(ssReader.read(file));
 		
 //		int i = 0; 
