@@ -1,0 +1,31 @@
+package edu.psu.ist.timeproject;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import edu.psu.ist.timeproject.spreadsheet.SpreadsheetReader;
+import edu.psu.ist.timeproject.xml.XMLReader;
+
+public class Runner {
+	
+	public static void main(String args[]) {
+		XMLReader xmlReader = new XMLReader(); 
+		SpreadsheetReader ssReader = new SpreadsheetReader(); 
+		ArrayList<TimeReport> reports = new ArrayList<>(); 
+		for (File file : new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\xmlDropBox").listFiles()) 
+			reports.addAll(xmlReader.read(file)); 
+		
+		for (File file : new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\SpreadsheetDropBox").listFiles()) 
+			reports.addAll(ssReader.read(file));
+		
+		int i = 0; 
+		for (TimeReport report : reports) {
+			report.print();
+			i++; 
+		}
+		System.out.println(i + " Total Reports"); 
+		
+		
+	}
+
+}

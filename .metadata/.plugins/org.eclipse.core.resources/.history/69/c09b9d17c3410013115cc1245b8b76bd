@@ -1,0 +1,42 @@
+package edu.psu.ist.timeproject;
+
+import java.util.Calendar;
+
+import javax.xml.datatype.Duration;
+
+import edu.psu.ist.timeproject.util.TimeFormatFactory;
+
+public class TimeReport {
+	
+	private int projectID; 
+	private Status projectStatus; 
+	private int clientID; 
+	private TimeRecord timeRecord; 
+	private int employeeID; 
+	private String employeeName;
+	private Calendar dateCreated; 
+	
+	public TimeReport ( int projectID, Status projectStatus, int clientID, Calendar startTime, Calendar endTime, Duration totalTime, int employeeID, String employeeName, Calendar dateCreated) {
+		this.projectID = projectID; 
+		this.projectStatus = projectStatus; 
+		this.clientID = clientID; 
+		timeRecord = new TimeRecord(startTime, endTime, totalTime); 
+		this.employeeID = employeeID; 
+		this.employeeName = employeeName; 
+		this.dateCreated = dateCreated; 
+	}
+	
+	public void print() {
+		System.out.println("Project ID: " + projectID); 
+		System.out.println("Project Status: " + projectStatus); 
+		System.out.println("Client ID: " + clientID); 
+		timeRecord.print();
+		System.out.println("Employee ID: " + employeeID); 
+		System.out.println("Employee Name: " + employeeName); 
+		System.out.println("Date Created: " + (dateCreated != null ? TimeFormatFactory.dateFormat.format(dateCreated.getTime()) : "")); 
+		System.out.print("\n"); 
+	}
+	
+	
+
+}
