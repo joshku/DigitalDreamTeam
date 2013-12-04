@@ -44,7 +44,7 @@ public class XMLReader {
 				Element element = (Element) iter.next();
 
 				int projectID = Integer.parseInt( getNodeText( element, "project_ID" ) ); 
-				Status projectStatus = Status.valueOf( getNodeText( element, "project_status" ) ); 
+				Status projectStatus = getNodeText( element, "project_status" ).equals("close") ? Status.closed : Status.open; 
 				int clientID = Integer.parseInt( getNodeText( element, "client_ID" ) ); 
 				
 				Node timeRecord = element.selectNodes("time_record").get(0); 
@@ -59,7 +59,10 @@ public class XMLReader {
 				Duration duration = null; 
 	
 				dtFactory = DatatypeFactory.newInstance();
-				duration = dtFactory.newDuration( getNodeText( timeRecord, "project_total_time" ) ); 
+				String durationString = getNodeText( timeRecord, "project_total_time" ); 
+				
+				if (!durationString.isEmpty())
+					duration = dtFactory.newDuration( getNodeText( timeRecord, "project_total_time" ) ); 
 	
 				int employeeID = Integer.parseInt( getNodeText( element, "employee_ID" ) ); 
 				String employeeName = getNodeText( element, "employee_name" ); 

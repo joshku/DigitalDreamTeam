@@ -2,7 +2,6 @@ package edu.psu.ist.timeproject.spreadsheet;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -14,6 +13,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+
+import edu.psu.ist.timeproject.DataCleanser;
 import edu.psu.ist.timeproject.Status;
 import edu.psu.ist.timeproject.TimeReport;
 import edu.psu.ist.timeproject.util.TimeFormatFactory;
@@ -23,6 +24,7 @@ public class SpreadsheetReader {
 	int projectIDIndex; 
 	int projectStatusIndex; 
 	int clientIDIndex; 
+	int clientNameIndex; 
 	int startTimeIndex; 
 	int endTimeIndex; 
 	int durationIndex = -1;  
@@ -35,7 +37,8 @@ public class SpreadsheetReader {
 	private void resetIndices() {
 		projectIDIndex           = -1; 
 		projectStatusIndex       = -1; 
-		clientIDIndex            = -1; 
+		clientIDIndex            = -1;
+		clientNameIndex          = -1; 
 		startTimeIndex           = -1; 
 		endTimeIndex             = -1; 
 		durationIndex            = -1; 
@@ -76,6 +79,9 @@ public class SpreadsheetReader {
 				totalDurationIndex = cell.getColumnIndex(); 
 			else if (header.contains("Client") && header.contains("ID"))
 				clientIDIndex = cell.getColumnIndex(); 
+			else if ((header.contains("Client") && header.contains("Name"))
+				 || (header.equals("Organization")))
+				clientNameIndex = cell.getColumnIndex(); 
 		}
 		
 	}
@@ -88,29 +94,27 @@ public class SpreadsheetReader {
 	    return true;
 	}
 	
-	private int getIntegerValue(Row row, int index) {
-		int value = 0; 
+	private Integer getIntegerValue(Row row, int index) {
+		Integer value = 0; 
 		if (row.getCell(index).getCellType() == Cell.CELL_TYPE_NUMERIC)
 			value = (int)row.getCell(index).getNumericCellValue(); 
-		else
-			value = Integer.parseInt(row.getCell(index).getStringCellValue()); 
+		else {
+			String str = row.getCell(index).getStringCellValue();
+			try {
+				value = Integer.parseInt(str); 
+			}
+			catch(NumberFormatException nfe) {
+				value = null; 
+			}
+		}
 		
 		return value; 
 	}
 	
-	private String parseDuration(String duration) throws ParseException {
-		
-		Calendar calendar = Calendar.getInstance(); 
-		calendar.setTime(TimeFormatFactory.timeFormat.parse(duration)); 
-		String durationStr = "PT";
-		durationStr += String.format("%02dH", calendar.get(Calendar.HOUR_OF_DAY)); 
-		durationStr += String.format("%02dM", calendar.get(Calendar.MINUTE)); 
-		durationStr += String.format("%02dS", calendar.get(Calendar.SECOND)); 
-		return durationStr; 	
-	}
+
 	
 	public ArrayList<TimeReport> read(File file) {
-		ArrayList<TimeReport> reports = new ArrayList<>(); 
+		ArrayList<TimeReport> reports = new ArrayList<TimeReport>(); 
         try
         {
 //            FileInputStream file = new FileInputStream(new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\lib\\Access_Data_Time_Reports_IST_420-001_FA1.xls"));
@@ -137,12 +141,11 @@ public class SpreadsheetReader {
                 if(isRowEmpty(row))
                 	break; 
 
-				int projectID = getIntegerValue(row, projectIDIndex); 
-				
-                Status status = (row.getCell(projectStatusIndex).getStringCellValue() == "Closed" ? Status.close : Status.open);   // Status 
+				Integer projectID = getIntegerValue(row, projectIDIndex); 
+                Status status = (row.getCell(projectStatusIndex).getStringCellValue().equalsIgnoreCase("Closed") ? Status.closed : Status.open);   // Status 
                 
-				int clientID = getIntegerValue(row, clientIDIndex); 
-				
+				Integer clientID = getIntegerValue(row, clientIDIndex); 
+				String clientName = row.getCell(clientNameIndex).getStringCellValue(); 
                 Calendar startTime = Calendar.getInstance();
                 if (row.getCell(startTimeIndex).getCellType() != Cell.CELL_TYPE_BLANK)
                 	startTime.setTime( row.getCell(startTimeIndex).getDateCellValue() );     // Start Time
@@ -155,7 +158,7 @@ public class SpreadsheetReader {
                 	endTime = null; 
                 
 				DatatypeFactory dtFactory = DatatypeFactory.newInstance();
-				Duration duration;
+				Duration duration = null;
 				String durationStr = ""; 
 				if (totalDurationIndex != -1) {
 					if (row.getCell(totalDurationIndex).getCellType() == Cell.CELL_TYPE_NUMERIC)
@@ -165,14 +168,15 @@ public class SpreadsheetReader {
 				}		
 				else if (durationIndex != -1) {
 					if (row.getCell(durationIndex).getCellType() != Cell.CELL_TYPE_NUMERIC) 
-						durationStr = parseDuration( row.getCell(durationIndex).getStringCellValue() );
+						durationStr = DataCleanser.parseDuration( row.getCell(durationIndex).getStringCellValue() );
 					else
-						durationStr = parseDuration( TimeFormatFactory.timeFormat.format(row.getCell(durationIndex).getDateCellValue() )); 
+						durationStr = DataCleanser.parseDuration( TimeFormatFactory.timeFormat.format(row.getCell(durationIndex).getDateCellValue() )); 
 				}
-					 
-				duration = dtFactory.newDuration( durationStr ); 
-						
-				int employeeID = getIntegerValue(row, employeeIDIndex); 
+
+				if (!durationStr.isEmpty())
+					duration = dtFactory.newDuration( durationStr ); 
+				
+				Integer employeeID = getIntegerValue(row, employeeIDIndex); 
 								
                 String employeeName = row.getCell(employeeNameIndex).getStringCellValue();   // Employee Name          
                 
@@ -182,7 +186,7 @@ public class SpreadsheetReader {
                 else
                 	dateCreated = null; 
 
-                TimeReport report = new TimeReport(projectID, status, clientID, startTime, endTime, duration, employeeID, employeeName, dateCreated); 
+                TimeReport report = new TimeReport(projectID, status, clientID, clientName, startTime, endTime, duration, employeeID, employeeName, dateCreated); 
                 reports.add(report); 
             }
             fis.close();

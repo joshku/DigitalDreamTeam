@@ -40,7 +40,14 @@ public class TimeRecord {
 		this.duration = duration; 
 	}
 	
+	public Duration getTimeDuration() {
+		return this.duration; 
+	}
+	
 	public String getDuration() {
+		if (duration == null)
+			return null; 
+		
 		String durationString = "PT";
 		durationString += String.format("%02dH", duration.getHours());
 		durationString += String.format("%02dM", duration.getMinutes()); 
