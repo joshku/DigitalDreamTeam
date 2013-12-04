@@ -10,6 +10,26 @@ import edu.psu.ist.timeproject.util.TimeFormatFactory;
 
 public class TimeRecord {
 	
+	public Calendar getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Calendar startTime) {
+		this.startTime = startTime;
+	}
+
+	public Calendar getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Calendar endTime) {
+		this.endTime = endTime;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+
 	private Calendar startTime;
 	private Calendar endTime; 
 	private Duration duration; 
@@ -20,7 +40,7 @@ public class TimeRecord {
 		this.duration = duration; 
 	}
 	
-	private String getDuration() {
+	public String getDuration() {
 		String durationString = "PT";
 		durationString += String.format("%02dH", duration.getHours());
 		durationString += String.format("%02dM", duration.getMinutes()); 

@@ -10,6 +10,62 @@ import edu.psu.ist.timeproject.util.TimeFormatFactory;
 
 public class TimeReport {
 	
+	public int getProjectID() {
+		return projectID;
+	}
+
+	public void setProjectID(int projectID) {
+		this.projectID = projectID;
+	}
+
+	public Status getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(Status projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+	public int getClientID() {
+		return clientID;
+	}
+
+	public void setClientID(int clientID) {
+		this.clientID = clientID;
+	}
+
+	public TimeRecord getTimeRecord() {
+		return timeRecord;
+	}
+
+	public void setTimeRecord(TimeRecord timeRecord) {
+		this.timeRecord = timeRecord;
+	}
+
+	public int getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public Calendar getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Calendar dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
 	private int projectID; 
 	private Status projectStatus; 
 	private int clientID; 

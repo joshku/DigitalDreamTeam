@@ -35,9 +35,9 @@ public class Runner {
 		
 		Document document = DocumentHelper.createDocument();
 		Element root = document.addElement("project"); 
-		for (TimeReport report : reports) 
-			report.toXML(root);
-		
+//		for (TimeReport report : reports) 
+//			report.toXML(root);
+		DBConnect.saveRecords(reports);
         // lets write to a file
 		OutputFormat format = OutputFormat.createPrettyPrint();
         XMLWriter writer = new XMLWriter(
