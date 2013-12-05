@@ -29,23 +29,40 @@ public class XMLReader {
 	}
 	
 	private static String getNodeText(Node node, String xpath) {
-		return node.selectNodes(xpath).get(0).getText(); 	
+		if (node.selectNodes(xpath).size() != 0) 
+			return node.selectNodes(xpath).get(0).getText();
+		else 
+			return null; 
+	}
+	
+	private Integer getIntegerValue(String str) {
+		Integer value = null; 
+
+		try {
+			value = Integer.parseInt(str); 
+		}
+		catch(NumberFormatException nfe) {
+			value = null; 
+		}
+		
+		return value; 
 	}
 	
 	public ArrayList<TimeReport> read(File file) {
 		ArrayList<TimeReport> reports = new ArrayList<TimeReport>(); 
 		
 		try {
-//			Document doc = parse(new File("C:\\Users\\Code\\Documents\\School\\IST 420\\FinalProject\\TimeSystem\\lib\\Access_Data_Phase_C_Instance_IST_420-001.xml"));
 			Document doc = parse(file); 
 			Element root = doc.getRootElement(); 
 
 			for (Iterator<?> iter = root.elementIterator(); iter.hasNext();) {
 				Element element = (Element) iter.next();
 
-				int projectID = Integer.parseInt( getNodeText( element, "project_ID" ) ); 
+				Integer projectID = getIntegerValue(getNodeText( element, "project_ID" )); 
 				Status projectStatus = getNodeText( element, "project_status" ).equals("close") ? Status.closed : Status.open; 
-				int clientID = Integer.parseInt( getNodeText( element, "client_ID" ) ); 
+				Integer clientID = getIntegerValue(getNodeText( element, "client_ID" )); 
+				
+				String clientName = getNodeText(element, "client_name"); 
 				
 				Node timeRecord = element.selectNodes("time_record").get(0); 
 				
@@ -64,13 +81,13 @@ public class XMLReader {
 				if (!durationString.isEmpty())
 					duration = dtFactory.newDuration( getNodeText( timeRecord, "project_total_time" ) ); 
 	
-				int employeeID = Integer.parseInt( getNodeText( element, "employee_ID" ) ); 
+				Integer employeeID = getIntegerValue(getNodeText( element, "employee_ID" )); 
 				String employeeName = getNodeText( element, "employee_name" ); 
 				
 				Calendar dateCreated = Calendar.getInstance(); 
 				dateCreated.setTime( TimeFormatFactory.dateFormat.parse( getNodeText( element, "date_created" ) ) ); 
 				
-				TimeReport report = new TimeReport( projectID, projectStatus, clientID, startTime, endTime, duration, employeeID, employeeName, dateCreated); 
+				TimeReport report = new TimeReport( projectID, projectStatus, clientID, clientName, startTime, endTime, duration, employeeID, employeeName, dateCreated); 
 				reports.add( report );								
 			}
 		} catch (DocumentException e) {

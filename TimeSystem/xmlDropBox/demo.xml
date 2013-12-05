@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet href="Access_Data_Phase_C_Test.css" type="text/css"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Phase_C_Schema.xsd">
+
+
+  <time_report>
+     <project_ID>28</project_ID>
+     <project_status>open</project_status>
+     <client_ID>10101</client_ID>
+     <client_name>Penn State</client_name>
+	 <time_record>
+        <project_start_time>13:30:00</project_start_time>
+		<project_end_time>16:50:00</project_end_time>
+		<project_total_time>PT03H20M00S</project_total_time>
+	 </time_record>
+     <employee_ID>100103</employee_ID>
+     <employee_name>Eric</employee_name>
+     <date_created>2013-12-04</date_created>
+  </time_report>
+  
+    <time_report>
+     <project_ID>28</project_ID>
+     <project_status>open</project_status>
+     <client_ID>10101</client_ID>
+     <client_name>Penn State</client_name>
+	 <time_record>
+        <project_start_time>01:30:00</project_start_time>
+		<project_end_time>02:50:00</project_end_time>
+		<project_total_time>PT01H20M00S</project_total_time>
+	 </time_record>
+     <employee_ID>100103</employee_ID>
+     <employee_name>Eric</employee_name>
+     <date_created>2013-12-04</date_created>
+  </time_report>
+  
+  <time_report>
+     <project_ID>28</project_ID>
+     <project_status></project_status>
+     <client_ID></client_ID>
+     <client_name>Penn State</client_name>
+	 <time_record>
+        <project_start_time>01:30:00</project_start_time>
+		<project_end_time>02:30:00</project_end_time>
+		<project_total_time>PT01H00M00S</project_total_time>
+	 </time_record>
+     <employee_ID>100103</employee_ID>
+     <employee_name>Eric</employee_name>
+     <date_created>2013-12-04</date_created>
+  </time_report>
+  
+    <time_report>
+     <project_ID>60</project_ID>
+     <project_status>close</project_status>
+     <client_ID>10161</client_ID>
+     <client_name></client_name>
+	 <time_record>
+        <project_start_time>01:30:00</project_start_time>
+		<project_end_time>18:10:00</project_end_time>
+		<project_total_time>PT01H10M00S</project_total_time>
+	 </time_record>
+     <employee_ID>100103</employee_ID>
+     <employee_name>Eric</employee_name>
+     <date_created>2013-12-04</date_created>
+  </time_report>
+  
+      <time_report>
+     <project_ID>28</project_ID>
+     <project_status>open</project_status>
+     <client_ID></client_ID>
+     <client_name></client_name>
+	 <time_record>
+        <project_start_time>04:30:00</project_start_time>
+		<project_end_time>05:50:00</project_end_time>
+		<project_total_time>PT01H20M00S</project_total_time>
+	 </time_record>
+     <employee_ID>100103</employee_ID>
+     <employee_name>Eric</employee_name>
+     <date_created>2013-12-04</date_created>
+  </time_report>
+  
+</project>
+ 

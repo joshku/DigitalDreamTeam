@@ -166,7 +166,7 @@ public class XLSReader {
 					else
 						durationStr = row.getCell(totalDurationIndex).getStringCellValue(); 
 				}		
-				else if (durationIndex != -1) {
+				if (durationStr.isEmpty() && durationIndex != -1) {
 					if (row.getCell(durationIndex).getCellType() != Cell.CELL_TYPE_NUMERIC) 
 						durationStr = DataCleanser.parseDuration( row.getCell(durationIndex).getStringCellValue() );
 					else

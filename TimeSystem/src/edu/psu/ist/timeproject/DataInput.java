@@ -50,8 +50,8 @@ public class DataInput extends SwingWorker<Void, Void> implements PropertyChange
     }
 
     private void processData() {
-		File[] xmlFiles = null; 
-		File[] xlsFiles = null;
+		File[] xmlFiles = new File[0]; 
+		File[] xlsFiles = new File[0];
 		this.addPropertyChangeListener(this);
 		setProgress(0); 
 		processButton.setEnabled(false); 
@@ -64,36 +64,37 @@ public class DataInput extends SwingWorker<Void, Void> implements PropertyChange
 		
 		int totalFiles = xmlFiles.length + xlsFiles.length; 
 		progressBar.setMaximum(totalFiles);
-		
-		if (xmlDir != null && xmlDir.exists()) {
-//			xmlFiles = xmlDir.listFiles(new XMLFileFilter()); 
-			for (File file : xmlFiles) {
-				ArrayList<TimeReport> reports = xmlReader.read(file); 
-				outputLabel.setText("Processing file " + file.getName() + "..."); 
-				DataCleanser.cleanseReports(reports); 
-				File archive = new File(xmlDir.getAbsoluteFile() + File.separator + "archived");
-				archive.mkdirs(); 
-				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xml")); 
-				setProgress(getProgress() + 1); 
-			}
-		}
+		setProgress(0); 
 		
 		if(xlsDir != null && xlsDir.exists()) {
-//			xlsFiles = xlsDir.listFiles(new XLSFileFilter()); 
 			for (File file : xlsFiles) {
 				ArrayList<TimeReport> reports = xlsReader.read(file);
 				outputLabel.setText("Processing file " + file.getName() + "...");
 				DataCleanser.cleanseReports(reports);
 				File archive = new File(xlsDir.getAbsoluteFile() + File.separator + "archived");
 				archive.mkdirs(); 
-				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xls")); 
+//				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xls")); 
 				setProgress(getProgress() + 1); 
 			}
 		}
 		
-		outputLabel.setText("All files processed!");
+		if (xmlDir != null && xmlDir.exists()) {
+			for (File file : xmlFiles) {
+				ArrayList<TimeReport> reports = xmlReader.read(file); 
+				outputLabel.setText("Processing file " + file.getName() + "..."); 
+				DataCleanser.cleanseReports(reports); 
+				File archive = new File(xmlDir.getAbsoluteFile() + File.separator + "archived");
+				archive.mkdirs(); 
+//				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xml")); 
+				setProgress(getProgress() + 1); 
+			}
+		}
+		
+		outputLabel.setText(totalFiles > 0 ? "All files processed!" : "No files to process!");
 		int totalProcessed = DataCleanser.passedRecords + DataCleanser.failedRecords; 
-		JOptionPane.showMessageDialog(null,
+		
+		if (totalProcessed > 0) {
+			JOptionPane.showMessageDialog(null,
 				"XML Documents Processed: " + (xmlFiles != null ? xmlFiles.length : 0) + "\n" +
 				"XLS Documents Processed: " + (xlsFiles != null ? xlsFiles.length : 0) + "\n" +
 				"Total Records Processed: " + totalProcessed + "\n" 
@@ -101,7 +102,7 @@ public class DataInput extends SwingWorker<Void, Void> implements PropertyChange
 						+ "Records Failed: " + DataCleanser.failedRecords,
 				"Processing Completed!",
 				JOptionPane.INFORMATION_MESSAGE); 
-		
+		}
 		DataCleanser.resetStats();
 		processButton.setEnabled(true); 
     	
@@ -115,6 +116,7 @@ public class DataInput extends SwingWorker<Void, Void> implements PropertyChange
     @Override
     public void done() {
         Toolkit.getDefaultToolkit().beep();
+        progressBar.setValue(progressBar.getMinimum()); 
     }
 	
 	public static void main(String args[]) throws IOException {

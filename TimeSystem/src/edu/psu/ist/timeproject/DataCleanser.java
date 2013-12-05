@@ -54,7 +54,7 @@ public class DataCleanser {
 
 		for (TimeReport report : reports) {
 			isValid = true; 
-			if (report.getClientID() == null && report.getClientName() != null) {
+			if (report.getClientID() == null && report.getClientName() != null && report.getClientName() != "N/A") {
 				Integer clientID = getClientIDForName(report.getClientName()); 
 				if (clientID != null)
 					report.setClientID(clientID);
@@ -62,7 +62,7 @@ public class DataCleanser {
 					isValid = false; 
 			}
 			
-			if (report.getEmployeeID() == null && report.getEmployeeName() != null) {
+			if (report.getEmployeeID() == null && report.getEmployeeName() != null && report.getEmployeeName() != "N/A") {
 				Integer employeeID = getEmployeeIDForName(report.getEmployeeName()); 
 				if (employeeID != null)
 					report.setEmployeeID(employeeID);
@@ -89,7 +89,7 @@ public class DataCleanser {
 			if (report.getEmployeeID() == null && report.getEmployeeName() == null)
 				isValid = false;  
 			
-			if (report.getClientID() == null && report.getClientName() == null)
+			if (report.getClientID() == null && (report.getClientName() == null || report.getClientName() == "N/A"))
 				isValid = false;  
 			
 			if (report.getProjectID() == null) {
@@ -97,6 +97,7 @@ public class DataCleanser {
 			}
 			
 			TimeRecord timeRecord = report.getTimeRecord();
+			
 			if (timeRecord.getDuration() == null) {
 				Duration duration = null; 
 				if (timeRecord.getStartTime() != null && timeRecord.getEndTime() != null)
@@ -109,6 +110,22 @@ public class DataCleanser {
 				timeRecord.setStartTime(getStartTime(timeRecord.getEndTime(), timeRecord.getTimeDuration()));
 			if (timeRecord.getStartTime() != null && timeRecord.getEndTime() == null && timeRecord.getDuration() != null)
 				timeRecord.setEndTime(getEndTime(timeRecord.getStartTime(), timeRecord.getTimeDuration()));
+			
+			if (timeRecord.getStartTime() != null && timeRecord.getEndTime() != null && timeRecord.getTimeDuration() != null) {
+				Duration duration = calculateDuration(timeRecord.getStartTime(), timeRecord.getEndTime());
+				
+				/* If durations do not match up, recalculate the end time. */ 
+				if (!(duration.getHours() == timeRecord.getTimeDuration().getHours()) 
+				 || !(duration.getMinutes() == timeRecord.getTimeDuration().getMinutes())
+				 || !(duration.getSeconds() == timeRecord.getTimeDuration().getSeconds())) {
+//					isValid = false; 
+					timeRecord.setEndTime(getEndTime(timeRecord.getStartTime(), timeRecord.getTimeDuration()));
+				}
+			}
+			
+			if (timeRecord.getStartTime() != null && timeRecord.getEndTime() != null) 
+				if (timeRecord.getStartTime().getTimeInMillis() > timeRecord.getEndTime().getTimeInMillis()) 
+					isValid = false; 
 			
 			if (!isValid) {
 				DataOutput.saveRecord(report, DataOutput.INSERT_FAILED_SQL);

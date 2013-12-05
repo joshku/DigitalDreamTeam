@@ -21,11 +21,11 @@ public class FileFieldListener implements ActionListener {
 		JTextField field = (JTextField) arg0.getSource(); 
 		
 		if (!field.getText().isEmpty() && !new File(field.getText()).exists()) {
-			errorLabel.setForeground(Color.RED);
+			errorLabel.setForeground(Color.RED.darker().darker());
 			errorLabel.setText("Error!");
 		}
 		else {
-			errorLabel.setForeground(Color.GREEN); 
+			errorLabel.setForeground(Color.GREEN.darker().darker()); 
 			errorLabel.setText("Valid Directory!");
 		}
 

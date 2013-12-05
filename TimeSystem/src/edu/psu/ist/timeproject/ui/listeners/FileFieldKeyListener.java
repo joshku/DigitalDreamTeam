@@ -26,11 +26,11 @@ public class FileFieldKeyListener implements KeyListener {
 		JTextField field = (JTextField) arg0.getSource(); 
 		
 		if (!field.getText().isEmpty() && !new File(field.getText()).exists()) {
-			errorLabel.setForeground(Color.RED);
-			errorLabel.setText("Error!");
+			errorLabel.setForeground(Color.RED.darker().darker());
+			errorLabel.setText("Invalid Directory!");
 		}
 		else {
-			errorLabel.setForeground(Color.GREEN); 
+			errorLabel.setForeground(Color.GREEN.darker().darker()); 
 			errorLabel.setText("Valid Directory!");
 		}
 
