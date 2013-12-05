@@ -19,7 +19,7 @@ import edu.psu.ist.timeproject.Status;
 import edu.psu.ist.timeproject.TimeReport;
 import edu.psu.ist.timeproject.util.TimeFormatFactory;
 
-public class SpreadsheetReader {
+public class XLSReader {
 	
 	int projectIDIndex; 
 	int projectStatusIndex; 

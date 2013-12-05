@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 
-public class DBConnect {
+public class DataOutput {
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static final String DB_URL = "jdbc:mysql://joshku.no-ip.biz:3306/IST420"; 
 	
@@ -26,7 +26,7 @@ public class DBConnect {
 	static final String USER = "digitaldreamteam"; 
 	static final String PASS = "digitaldreamteam"; 
 	
-	public static void saveRecords(TimeReport report, String recordQuery) {
+	public static void saveRecord(TimeReport report, String recordQuery) {
 		Connection conn = null; 
 		PreparedStatement clientInsert = null;
 		PreparedStatement clientUpdate = null; 
@@ -43,7 +43,6 @@ public class DBConnect {
 			clientSelect = conn.prepareStatement(SELECT_CLIENT_SQL);
 			employInsert = conn.prepareStatement(INSERT_EMPLOY_SQL);
 			recordInsert = conn.prepareStatement(recordQuery); 
-			
 			
 			if (report.getClientID() != null) {
 				clientSelect.setInt(1, report.getClientID());

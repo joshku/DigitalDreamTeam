@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -30,6 +31,8 @@ public class TimeSystem extends JFrame {
 	private JButton xmlBrowseButton; 
 	private JButton xlsBrowseButton; 
 	private JButton processButton; 
+	private JProgressBar progressBar; 
+	private JLabel outputLabel; 
 	
 	public TimeSystem() {
 		try {
@@ -86,10 +89,24 @@ public class TimeSystem extends JFrame {
 		this.add(xlsValidationLabel, gbc); 
 		gbc.gridwidth = 1; 
 		
-		gbc.gridy = 4; 
+		gbc.gridy = 4;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2; 
+		gbc.fill = GridBagConstraints.BOTH; 
+		progressBar = new JProgressBar();
+		this.add(progressBar, gbc); 
+		gbc.gridwidth = 1; 
+		
 		gbc.gridx = 2; 
 		processButton = new JButton("Process Data"); 
 		this.add(processButton, gbc); 
+		
+		gbc.gridy = 5; 
+		gbc.gridx = 0; 
+		gbc.gridwidth = 2; 
+		outputLabel = new JLabel(" ");
+		outputLabel.setHorizontalAlignment(JLabel.CENTER);
+		this.add(outputLabel, gbc); 
 		
 		xmlFilesField.addActionListener(new FileFieldListener(xmlValidationLabel));
 		xlsFilesField.addActionListener(new FileFieldListener(xlsValidationLabel));
@@ -97,7 +114,7 @@ public class TimeSystem extends JFrame {
 		xlsFilesField.addKeyListener(new FileFieldKeyListener(xlsValidationLabel));
 		xmlBrowseButton.addActionListener(new BrowseButtonListener(xmlFilesField, this)); 
 		xlsBrowseButton.addActionListener(new BrowseButtonListener(xlsFilesField, this)); 
-		processButton.addActionListener(new ProcessDataButtonListener(xmlFilesField, xlsFilesField));
+		processButton.addActionListener(new ProcessDataButtonListener(xmlFilesField, xlsFilesField, progressBar, outputLabel));
 		
 		this.setTitle("Access Data Time Management System");
 		this.setPreferredSize(new Dimension(550,200));

@@ -10,6 +10,30 @@ import edu.psu.ist.timeproject.util.TimeFormatFactory;
 
 public class TimeReport {
 	
+	private Integer projectID; 
+	private Status projectStatus; 
+	private Integer clientID; 
+	private String clientName; 
+	private TimeRecord timeRecord; 
+	private Integer employeeID; 
+	private String employeeName;
+	private Calendar dateCreated; 
+	
+	public TimeReport (Integer projectID, Status projectStatus, Integer clientID, Calendar startTime, Calendar endTime, Duration totalTime, Integer employeeID, String employeeName, Calendar dateCreated) {
+		this(projectID, projectStatus, clientID, "N/A", startTime, endTime, totalTime, employeeID, employeeName, dateCreated); 
+	}
+	
+	public TimeReport (Integer projectID, Status projectStatus, Integer clientID, String clientName, Calendar startTime, Calendar endTime, Duration totalTime, Integer employeeID, String employeeName, Calendar dateCreated) {
+		this.projectID = projectID; 
+		this.projectStatus = projectStatus; 
+		this.clientID = clientID; 
+		this.clientName = clientName; 
+		this.timeRecord = new TimeRecord(startTime, endTime, totalTime); 
+		this.employeeID = employeeID; 
+		this.employeeName = employeeName; 
+		this.dateCreated = dateCreated; 
+	}
+	
 	public Integer getProjectID() {
 		return projectID;
 	}
@@ -72,30 +96,6 @@ public class TimeReport {
 
 	public void setDateCreated(Calendar dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-
-	private Integer projectID; 
-	private Status projectStatus; 
-	private Integer clientID; 
-	private String clientName; 
-	private TimeRecord timeRecord; 
-	private Integer employeeID; 
-	private String employeeName;
-	private Calendar dateCreated; 
-	
-	public TimeReport (Integer projectID, Status projectStatus, Integer clientID, Calendar startTime, Calendar endTime, Duration totalTime, Integer employeeID, String employeeName, Calendar dateCreated) {
-		this(projectID, projectStatus, clientID, "N/A", startTime, endTime, totalTime, employeeID, employeeName, dateCreated); 
-	}
-	
-	public TimeReport (Integer projectID, Status projectStatus, Integer clientID, String clientName, Calendar startTime, Calendar endTime, Duration totalTime, Integer employeeID, String employeeName, Calendar dateCreated) {
-		this.projectID = projectID; 
-		this.projectStatus = projectStatus; 
-		this.clientID = clientID; 
-		this.clientName = clientName; 
-		this.timeRecord = new TimeRecord(startTime, endTime, totalTime); 
-		this.employeeID = employeeID; 
-		this.employeeName = employeeName; 
-		this.dateCreated = dateCreated; 
 	}
 	
 	public void print() {

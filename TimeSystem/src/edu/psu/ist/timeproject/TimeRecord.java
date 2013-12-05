@@ -10,6 +10,20 @@ import edu.psu.ist.timeproject.util.TimeFormatFactory;
 
 public class TimeRecord {
 	
+	private Calendar startTime;
+	private Calendar endTime; 
+	private Duration duration; 
+	
+	public TimeRecord( Calendar startTime, Calendar endTime, Duration duration) {
+		this.startTime = startTime; 
+		this.endTime = endTime; 
+		this.duration = duration; 
+	}
+	
+	public Duration getTimeDuration() {
+		return this.duration; 
+	}
+	
 	public Calendar getStartTime() {
 		return startTime;
 	}
@@ -29,20 +43,6 @@ public class TimeRecord {
 	public void setDuration(Duration duration) {
 		this.duration = duration;
 	}
-
-	private Calendar startTime;
-	private Calendar endTime; 
-	private Duration duration; 
-	
-	public TimeRecord( Calendar startTime, Calendar endTime, Duration duration) {
-		this.startTime = startTime; 
-		this.endTime = endTime; 
-		this.duration = duration; 
-	}
-	
-	public Duration getTimeDuration() {
-		return this.duration; 
-	}
 	
 	public String getDuration() {
 		if (duration == null)
@@ -52,15 +52,13 @@ public class TimeRecord {
 		durationString += String.format("%02dH", duration.getHours());
 		durationString += String.format("%02dM", duration.getMinutes()); 
 		durationString += String.format("%02dS", duration.getSeconds()); 
-		
-//		System.out.println("Duration: " + durationString); 
+
 		return durationString; 
 	}
 	
 	public void print() {
 		System.out.println("Start Time: " + (startTime != null ? TimeFormatFactory.timeFormat.format(startTime.getTime()) : ""));
 		System.out.println("End Time: " + (endTime != null ? TimeFormatFactory.timeFormat.format(endTime.getTime()) : ""));
-//		System.out.println("Duration: " + duration.toString()); 
 		System.out.println("Duration: " + getDuration()); 
 	}
 	

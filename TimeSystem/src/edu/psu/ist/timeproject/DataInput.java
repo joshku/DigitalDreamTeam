@@ -1,47 +1,97 @@
 package edu.psu.ist.timeproject;
 
+import java.awt.Toolkit;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
-import edu.psu.ist.timeproject.spreadsheet.SpreadsheetReader;
+import edu.psu.ist.timeproject.spreadsheet.XLSReader;
 import edu.psu.ist.timeproject.ui.filters.XLSFileFilter;
 import edu.psu.ist.timeproject.ui.filters.XMLFileFilter;
 import edu.psu.ist.timeproject.util.TimeFormatFactory;
 import edu.psu.ist.timeproject.xml.XMLReader;
 
-public class Runner {
+public class DataInput extends SwingWorker<Void, Void> implements PropertyChangeListener {
 	
-	private static XMLReader xmlReader = new XMLReader(); 
-	private static SpreadsheetReader xlsReader = new SpreadsheetReader(); 
+	private XMLReader xmlReader = new XMLReader(); 
+	private XLSReader xlsReader = new XLSReader(); 
+	private File xmlDir; 
+	private File xlsDir; 
 	
-	public static void run(File xmlDir, File xlsDir) {
+	private JProgressBar progressBar; 
+	private JLabel outputLabel; 
+	private JButton processButton; 
+	
+	public DataInput(File xmlDir, File xlsDir, JProgressBar progressBar, JLabel outputLabel, JButton processButton) {
+		this.xmlDir = xmlDir; 
+		this.xlsDir = xlsDir; 
+		this.progressBar = progressBar; 
+		this.outputLabel = outputLabel; 
+		this.processButton = processButton; 
+	}
+	
+    /**
+     * Invoked when task's progress property changes.
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+        } 
+    }
+
+    private void processData() {
 		File[] xmlFiles = null; 
 		File[] xlsFiles = null;
+		this.addPropertyChangeListener(this);
+		setProgress(0); 
+		processButton.setEnabled(false); 
 		if (xmlDir != null && xmlDir.exists()) {
 			xmlFiles = xmlDir.listFiles(new XMLFileFilter()); 
+		}
+		if(xlsDir != null && xlsDir.exists()) {
+			xlsFiles = xlsDir.listFiles(new XLSFileFilter()); 
+		}
+		
+		int totalFiles = xmlFiles.length + xlsFiles.length; 
+		progressBar.setMaximum(totalFiles);
+		
+		if (xmlDir != null && xmlDir.exists()) {
+//			xmlFiles = xmlDir.listFiles(new XMLFileFilter()); 
 			for (File file : xmlFiles) {
 				ArrayList<TimeReport> reports = xmlReader.read(file); 
-				DataCleanser.cleansReports(reports); 
+				outputLabel.setText("Processing file " + file.getName() + "..."); 
+				DataCleanser.cleanseReports(reports); 
 				File archive = new File(xmlDir.getAbsoluteFile() + File.separator + "archived");
 				archive.mkdirs(); 
 				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xml")); 
+				setProgress(getProgress() + 1); 
 			}
 		}
 		
 		if(xlsDir != null && xlsDir.exists()) {
-			xlsFiles = xlsDir.listFiles(new XLSFileFilter()); 
+//			xlsFiles = xlsDir.listFiles(new XLSFileFilter()); 
 			for (File file : xlsFiles) {
-				ArrayList<TimeReport> reports = xlsReader.read(file); 
-				DataCleanser.cleansReports(reports);
+				ArrayList<TimeReport> reports = xlsReader.read(file);
+				outputLabel.setText("Processing file " + file.getName() + "...");
+				DataCleanser.cleanseReports(reports);
 				File archive = new File(xlsDir.getAbsoluteFile() + File.separator + "archived");
 				archive.mkdirs(); 
 				file.renameTo(new File(archive.getAbsolutePath() + File.separator + file.getName().substring(0, file.getName().indexOf(".")) + TimeFormatFactory.fileFormat.format(Calendar.getInstance().getTime()) + ".xls")); 
+				setProgress(getProgress() + 1); 
 			}
 		}
+		
+		outputLabel.setText("All files processed!");
 		int totalProcessed = DataCleanser.passedRecords + DataCleanser.failedRecords; 
 		JOptionPane.showMessageDialog(null,
 				"XML Documents Processed: " + (xmlFiles != null ? xmlFiles.length : 0) + "\n" +
@@ -53,7 +103,19 @@ public class Runner {
 				JOptionPane.INFORMATION_MESSAGE); 
 		
 		DataCleanser.resetStats();
+		processButton.setEnabled(true); 
+    	
+    }
+	@Override
+	protected Void doInBackground() throws Exception {
+		processData(); 
+		return null;
 	}
+	
+    @Override
+    public void done() {
+        Toolkit.getDefaultToolkit().beep();
+    }
 	
 	public static void main(String args[]) throws IOException {
 //		XMLReader xmlReader = new XMLReader(); 
@@ -72,8 +134,6 @@ public class Runner {
 //            new FileWriter( "output.xml" ), format
 //        );
 //        writer.write( document );
-//        writer.close();
-		
+//        writer.close();	
 	}
-
 }

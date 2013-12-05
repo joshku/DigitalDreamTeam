@@ -15,8 +15,7 @@ public class DataCleanser {
 	public static int passedRecords = 0; 
 	public static int failedRecords = 0; 
 	
-	public static String parseDuration(String duration) throws ParseException {
-		
+	public static String parseDuration(String duration) throws ParseException {	
 		if (duration.isEmpty())
 			return ""; 
 		
@@ -30,26 +29,26 @@ public class DataCleanser {
 	}
 
 	public static String getEmployeeNameForID(int id) {
-		return DBConnect.queryForStringValue(id, DBConnect.GET_EMPLOY_NAME_SQL); 
+		return DataOutput.queryForStringValue(id, DataOutput.GET_EMPLOY_NAME_SQL); 
 	}
 	
 	public static String getClientNameForID(int id) {
-		return DBConnect.queryForStringValue(id, DBConnect.GET_CLIENT_NAME_SQL); 
+		return DataOutput.queryForStringValue(id, DataOutput.GET_CLIENT_NAME_SQL); 
 	}
 	
 	public static Integer getEmployeeIDForName(String name) {
-		return DBConnect.queryForIntValue(name, DBConnect.GET_EMPLOY_ID_SQL); 
+		return DataOutput.queryForIntValue(name, DataOutput.GET_EMPLOY_ID_SQL); 
 	}
 	
 	public static Integer getClientIDForName(String name) {
-		return DBConnect.queryForIntValue(name, DBConnect.GET_CLIENT_ID_SQL); 
+		return DataOutput.queryForIntValue(name, DataOutput.GET_CLIENT_ID_SQL); 
 	}
 	
 	public static void resetStats() {
 		passedRecords = 0; 
 		failedRecords = 0; 
 	}
-	public static void cleansReports(ArrayList<TimeReport> reports) {
+	public static void cleanseReports(ArrayList<TimeReport> reports) {
 
 		boolean isValid; 
 
@@ -112,20 +111,15 @@ public class DataCleanser {
 				timeRecord.setEndTime(getEndTime(timeRecord.getStartTime(), timeRecord.getTimeDuration()));
 			
 			if (!isValid) {
-				DBConnect.saveRecords(report, DBConnect.INSERT_FAILED_SQL);
+				DataOutput.saveRecord(report, DataOutput.INSERT_FAILED_SQL);
 				failedRecords += 1; 
 			}
 			else {
-				DBConnect.saveRecords(report, DBConnect.INSERT_RECORD_SQL);
+				DataOutput.saveRecord(report, DataOutput.INSERT_RECORD_SQL);
 				passedRecords += 1; 
 			}
 			
 		}
-//		reports.removeAll(failed); 
-//		
-//		DBConnect.saveRecords(reports, DBConnect.INSERT_RECORD_SQL);
-//		DBConnect.saveRecords(failed, DBConnect.INSERT_FAILED_SQL); 
-//		return reports; 
 	}
 	
 	public static Duration calculateDuration(Calendar startTime, Calendar endTime) {
